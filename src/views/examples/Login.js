@@ -17,6 +17,9 @@
 */
 
 // reactstrap components
+import useAuth from "hooks/useAuth";
+import { useState } from "react";
+import { useHistory } from "react-router";
 import {
   Button,
   Card,
@@ -33,15 +36,41 @@ import {
 } from "reactstrap";
 
 const Login = () => {
+  const { user, logInUser, logOut, authError } = useAuth();
+  const [userData, setUserData] = useState({});
+
+  const history = useHistory();
+
+  const jumpToRegister = (e) => {
+    e.preventDefault();
+    history.push("/auth/register");
+  };
+
+  const handleUserInput = (e) => {
+    const field = e.target.name;
+    const value = e.target.value;
+
+    const newUserData = { ...userData };
+    newUserData[field] = value;
+
+    setUserData(newUserData);
+  };
+
+  const handleUserLogin = (e) => {
+    e.preventDefault();
+
+    logInUser(userData.userEmail, userData.userPassword);
+  };
+
   return (
     <>
       <Col lg="5" md="7">
-        <Card className="bg-secondary shadow border-0">
-          <CardHeader className="bg-transparent pb-5">
-            <div className="text-muted text-center mt-2 mb-3">
+        <Card className="border-0 shadow bg-secondary">
+          <CardHeader className="pb-5 bg-transparent">
+            <div className="mt-2 mb-3 text-center text-muted">
               <small>Sign in with</small>
             </div>
-            <div className="btn-wrapper text-center">
+            <div className="text-center btn-wrapper">
               <Button
                 className="btn-neutral btn-icon"
                 color="default"
@@ -79,10 +108,10 @@ const Login = () => {
             </div>
           </CardHeader>
           <CardBody className="px-lg-5 py-lg-5">
-            <div className="text-center text-muted mb-4">
+            <div className="mb-4 text-center text-muted">
               <small>Or sign in with credentials</small>
             </div>
-            <Form role="form">
+            <Form role="form" onSubmit={handleUserLogin}>
               <FormGroup className="mb-3">
                 <InputGroup className="input-group-alternative">
                   <InputGroupAddon addonType="prepend">
@@ -91,9 +120,12 @@ const Login = () => {
                     </InputGroupText>
                   </InputGroupAddon>
                   <Input
+                    required
                     placeholder="Email"
                     type="email"
                     autoComplete="new-email"
+                    name="userEmail"
+                    onBlur={handleUserInput}
                   />
                 </InputGroup>
               </FormGroup>
@@ -105,12 +137,20 @@ const Login = () => {
                     </InputGroupText>
                   </InputGroupAddon>
                   <Input
+                    required
                     placeholder="Password"
                     type="password"
                     autoComplete="new-password"
+                    name="userPassword"
+                    onBlur={handleUserInput}
                   />
                 </InputGroup>
               </FormGroup>
+              {authError && (
+                <p className="my-3 text-danger" style={{ fontSize: "12px" }}>
+                  {authError}
+                </p>
+              )}
               <div className="custom-control custom-control-alternative custom-checkbox">
                 <input
                   className="custom-control-input"
@@ -125,11 +165,29 @@ const Login = () => {
                 </label>
               </div>
               <div className="text-center">
-                <Button className="my-4" color="primary" type="button">
+                <Button
+                  disabled={user.email ? true : false}
+                  onClick={handleUserLogin}
+                  className="my-4"
+                  color="primary"
+                  type="submit"
+                >
                   Sign in
                 </Button>
               </div>
             </Form>
+            <div className="text-center">
+              {user.email && (
+                <Button
+                  onClick={logOut}
+                  className="my-4"
+                  color="primary"
+                  type="submit"
+                >
+                  Sign out
+                </Button>
+              )}
+            </div>
           </CardBody>
         </Card>
         <Row className="mt-3">
@@ -143,11 +201,7 @@ const Login = () => {
             </a>
           </Col>
           <Col className="text-right" xs="6">
-            <a
-              className="text-light"
-              href="#pablo"
-              onClick={(e) => e.preventDefault()}
-            >
+            <a className="text-light" href="#register" onClick={jumpToRegister}>
               <small>Create new account</small>
             </a>
           </Col>

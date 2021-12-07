@@ -1,3 +1,4 @@
+import axios from "axios";
 import {
   getAuth,
   signInWithEmailAndPassword,
@@ -13,38 +14,37 @@ initializeAuthentication();
 const useFirebase = () => {
   const [user, setUser] = useState({});
   const [authError, setAuthError] = useState("");
-  const [loading, setLoading] = useState(false);
 
   const auth = getAuth();
 
   const registerUser = (email, password, name) => {
-    setLoading(true);
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
+        const userID = userCredential.user?.uid;
         setAuthError("");
 
         // Setup new user
         const newUser = { email, displayName: name };
         setUser(newUser);
+
+        // Save the user in database
+        saveUser(email, userID);
       })
       .catch((err) => {
         console.log(err.message);
         setAuthError(err.message);
-      })
-      .finally(() => setLoading(false));
+      });
   };
 
   const logInUser = (email, password) => {
-    setLoading(true);
     signInWithEmailAndPassword(auth, email, password)
       .then(() => {
         setAuthError("");
       })
       .catch((err) => {
         console.log(err.message);
-        setAuthError(err.message);
-      })
-      .finally(() => setLoading(false));
+        setAuthError(err.message.slice(22, -2));
+      });
   };
 
   useEffect(() => {
@@ -54,22 +54,31 @@ const useFirebase = () => {
       } else {
         setUser({});
       }
-      setLoading(false);
     });
     return () => monitorUser;
   }, [auth]);
 
   const logOut = () => {
-    setLoading(true);
     signOut(auth)
       .then(() => setUser({}))
       .catch((err) => console.log(err.message));
   };
 
+  const saveUser = (email, uid) => {
+    const user = { email, uid };
+    axios
+      .post("https://registertest.free.beeceptor.com/init", user)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return {
     user,
     authError,
-    loading,
     registerUser,
     logInUser,
     logOut,
