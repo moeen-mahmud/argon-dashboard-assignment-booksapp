@@ -17,6 +17,8 @@
 */
 
 // reactstrap components
+import useAuth from "hooks/useAuth";
+import { useState } from "react";
 import {
   Button,
   Card,
@@ -33,17 +35,37 @@ import {
 } from "reactstrap";
 
 const Register = () => {
+  const { user, registerUser, logOut } = useAuth();
+
+  const [userData, setUserData] = useState({});
+
+  const handleUserInput = (e) => {
+    const field = e.target.name;
+    const value = e.target.value;
+
+    const newUserData = { ...userData };
+    newUserData[field] = value;
+
+    setUserData(newUserData);
+  };
+
+  const handleRegisterUser = (e) => {
+    e.preventDefault();
+
+    registerUser(userData.userEmail, userData.userPassword, userData.userName);
+  };
+
   return (
     <>
       <Col lg="6" md="8">
-        <Card className="bg-secondary shadow border-0">
-          <CardHeader className="bg-transparent pb-5">
-            <div className="text-muted text-center mt-2 mb-4">
+        <Card className="border-0 shadow bg-secondary">
+          <CardHeader className="pb-5 bg-transparent">
+            <div className="mt-2 mb-4 text-center text-muted">
               <small>Sign up with</small>
             </div>
             <div className="text-center">
               <Button
-                className="btn-neutral btn-icon mr-4"
+                className="mr-4 btn-neutral btn-icon"
                 color="default"
                 href="#pablo"
                 onClick={(e) => e.preventDefault()}
@@ -79,22 +101,28 @@ const Register = () => {
             </div>
           </CardHeader>
           <CardBody className="px-lg-5 py-lg-5">
-            <div className="text-center text-muted mb-4">
+            <div className="mb-4 text-center text-muted">
               <small>Or sign up with credentials</small>
             </div>
-            <Form role="form">
+            <Form role="form" onSubmit={handleRegisterUser}>
               <FormGroup>
-                <InputGroup className="input-group-alternative mb-3">
+                <InputGroup className="mb-3 input-group-alternative">
                   <InputGroupAddon addonType="prepend">
                     <InputGroupText>
                       <i className="ni ni-hat-3" />
                     </InputGroupText>
                   </InputGroupAddon>
-                  <Input placeholder="Name" type="text" />
+                  <Input
+                    placeholder="Name"
+                    type="text"
+                    name="userName"
+                    required
+                    onBlur={handleUserInput}
+                  />
                 </InputGroup>
               </FormGroup>
               <FormGroup>
-                <InputGroup className="input-group-alternative mb-3">
+                <InputGroup className="mb-3 input-group-alternative">
                   <InputGroupAddon addonType="prepend">
                     <InputGroupText>
                       <i className="ni ni-email-83" />
@@ -103,7 +131,10 @@ const Register = () => {
                   <Input
                     placeholder="Email"
                     type="email"
+                    name="userEmail"
                     autoComplete="new-email"
+                    required
+                    onBlur={handleUserInput}
                   />
                 </InputGroup>
               </FormGroup>
@@ -117,7 +148,10 @@ const Register = () => {
                   <Input
                     placeholder="Password"
                     type="password"
+                    name="userPassword"
                     autoComplete="new-password"
+                    required
+                    onBlur={handleUserInput}
                   />
                 </InputGroup>
               </FormGroup>
@@ -150,11 +184,28 @@ const Register = () => {
                 </Col>
               </Row>
               <div className="text-center">
-                <Button className="mt-4" color="primary" type="button">
+                <Button
+                  disabled={user.email ? true : false}
+                  className="mt-4"
+                  color="primary"
+                  type="submit"
+                >
                   Create account
                 </Button>
               </div>
             </Form>
+            <div className="text-center">
+              {user.email && (
+                <Button
+                  onClick={logOut}
+                  className="mt-4"
+                  color="primary"
+                  type="submit"
+                >
+                  Log out
+                </Button>
+              )}
+            </div>
           </CardBody>
         </Card>
       </Col>
