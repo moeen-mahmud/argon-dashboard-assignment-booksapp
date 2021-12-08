@@ -19,6 +19,7 @@
 // reactstrap components
 import useAuth from "hooks/useAuth";
 import { useState } from "react";
+import { useHistory } from "react-router";
 import {
   Button,
   Card,
@@ -39,6 +40,8 @@ const Register = () => {
 
   const [userData, setUserData] = useState({});
 
+  const history = useHistory();
+
   const handleUserInput = (e) => {
     const field = e.target.name;
     const value = e.target.value;
@@ -52,7 +55,12 @@ const Register = () => {
   const handleRegisterUser = (e) => {
     e.preventDefault();
 
-    registerUser(userData.userEmail, userData.userPassword, userData.userName);
+    registerUser(
+      userData.userEmail,
+      userData.userPassword,
+      userData.userName,
+      history
+    );
   };
 
   return (

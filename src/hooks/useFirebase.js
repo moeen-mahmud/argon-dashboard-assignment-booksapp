@@ -17,7 +17,7 @@ const useFirebase = () => {
 
   const auth = getAuth();
 
-  const registerUser = (email, password, name) => {
+  const registerUser = (email, password, name, history) => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const userID = userCredential.user?.uid;
@@ -29,6 +29,9 @@ const useFirebase = () => {
 
         // Save the user in database
         saveUser(email, userID);
+
+        // Show success page
+        history.replace("/auth/success");
       })
       .catch((err) => {
         console.log(err.message);
