@@ -36,7 +36,7 @@ import {
 } from "reactstrap";
 
 const Register = () => {
-  const { user, registerUser, logOut } = useAuth();
+  const { user, authError, registerUser, logOut } = useAuth();
 
   const [userData, setUserData] = useState({});
 
@@ -163,6 +163,11 @@ const Register = () => {
                   />
                 </InputGroup>
               </FormGroup>
+              {authError && (
+                <p className="my-3 text-danger" style={{ fontSize: "12px" }}>
+                  {authError}
+                </p>
+              )}
               <div className="text-muted font-italic">
                 <small>
                   password strength:{" "}

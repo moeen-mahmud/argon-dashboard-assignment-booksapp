@@ -28,14 +28,16 @@ const useFirebase = () => {
         setUser(newUser);
 
         // Save the user in database
-        saveUser(email, userID);
+        saveUser(email, userID, history);
 
-        // Show success page
-        history.replace("/auth/success");
+        // Remove the comment for testing purpose
+        // As the endpoint is not working right
+        // Redirect to success page
+        // history.replace("/auth/success");
       })
       .catch((err) => {
         console.log(err.message);
-        setAuthError(err.message);
+        setAuthError(err.message.slice(9));
       });
   };
 
@@ -46,7 +48,7 @@ const useFirebase = () => {
       })
       .catch((err) => {
         console.log(err.message);
-        setAuthError(err.message.slice(22, -2));
+        setAuthError(err.message.slice(9));
       });
   };
 
@@ -67,12 +69,16 @@ const useFirebase = () => {
       .catch((err) => console.log(err.message));
   };
 
-  const saveUser = (email, uid) => {
+  const saveUser = (email, uid, history) => {
     const user = { email, uid };
     axios
       .post("https://registertest.free.beeceptor.com/init", user)
       .then((res) => {
-        console.log(res);
+        console.log(res.data);
+        if (res.status === 200) {
+          // Redirect to success page if response status is ok
+          history.replace("/auth/success");
+        }
       })
       .catch((err) => {
         console.log(err);

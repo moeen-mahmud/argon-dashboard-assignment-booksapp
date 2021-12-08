@@ -26,6 +26,7 @@ import AuthFooter from "components/Footers/AuthFooter.js";
 
 import routes from "routes.js";
 import useAuth from "hooks/useAuth";
+import SuccessPage from "components/SuccessPage/SuccessPage";
 
 const Auth = (props) => {
   // get the user info
@@ -102,6 +103,9 @@ const Auth = (props) => {
         <Container className="pb-5 mt--8">
           <Row className="justify-content-center">
             <Switch>
+              <Route path="/auth/success">
+                <SuccessPage />
+              </Route>
               {getRoutes(routes)}
               <Redirect from="*" to="/auth/login" />
             </Switch>
