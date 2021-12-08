@@ -58,10 +58,11 @@ const useFirebase = () => {
       })
       .catch((err) => {
         console.log(err.message);
-        setAuthError(err.message.slice(9));
+        setAuthError(err.message.slice(9)); // Slice only the message body
       });
   };
 
+  // hold the user and monitor the state change
   useEffect(() => {
     const monitorUser = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -73,12 +74,14 @@ const useFirebase = () => {
     return () => monitorUser;
   }, [auth]);
 
+  // Function for logging out the user
   const logOut = () => {
     signOut(auth)
       .then(() => setUser({}))
       .catch((err) => console.log(err.message));
   };
 
+  // Function for saving the user to the database
   const saveUser = (email, uid, history) => {
     const user = { email, uid };
     axios

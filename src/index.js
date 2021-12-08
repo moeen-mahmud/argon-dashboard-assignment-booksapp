@@ -28,6 +28,7 @@ import AuthLayout from "layouts/Auth.js";
 import AuthProvider from "context/AuthProvider/AuthProvider";
 
 ReactDOM.render(
+  // Auth Context
   <AuthProvider>
     <BrowserRouter>
       <Switch>
