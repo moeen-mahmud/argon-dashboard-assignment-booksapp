@@ -1,4 +1,6 @@
-import axios from "axios";
+import axios from "axios"; //🔥
+
+// Modules for authentication
 import {
   getAuth,
   signInWithEmailAndPassword,
@@ -6,17 +8,24 @@ import {
   onAuthStateChanged,
   signOut,
 } from "firebase/auth";
+
+// The initializer
 import initializeAuthentication from "Firebase/firebase.init";
+
+// React
 import { useEffect, useState } from "react";
 
+// Calling the function to initialize the auth
 initializeAuthentication();
 
 const useFirebase = () => {
+  // States for the user and the errors
   const [user, setUser] = useState({});
   const [authError, setAuthError] = useState("");
 
   const auth = getAuth();
 
+  // Function for registering the user
   const registerUser = (email, password, name, history) => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
@@ -37,14 +46,15 @@ const useFirebase = () => {
       })
       .catch((err) => {
         console.log(err.message);
-        setAuthError(err.message.slice(9));
+        setAuthError(err.message.slice(9)); // Slice only the message body
       });
   };
 
+  // Function for logging the user
   const logInUser = (email, password) => {
     signInWithEmailAndPassword(auth, email, password)
       .then(() => {
-        setAuthError("");
+        setAuthError(""); // Set to its initial state if there is no error
       })
       .catch((err) => {
         console.log(err.message);
