@@ -15,11 +15,13 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-
-// reactstrap components
+// Auth hook
 import useAuth from "hooks/useAuth";
+
 import { useState } from "react";
 import { useHistory } from "react-router";
+
+// reactstrap components
 import {
   Button,
   Card,
@@ -37,15 +39,18 @@ import {
 
 const Login = () => {
   const { user, logInUser, logOut, authError } = useAuth();
-  const [userData, setUserData] = useState({});
+
+  const [userData, setUserData] = useState({}); // State for storing user inputs
 
   const history = useHistory();
 
+  // Go to register page
   const jumpToRegister = (e) => {
     e.preventDefault();
     history.push("/auth/register");
   };
 
+  // Handler for user inputs
   const handleUserInput = (e) => {
     const field = e.target.name;
     const value = e.target.value;
@@ -56,6 +61,7 @@ const Login = () => {
     setUserData(newUserData);
   };
 
+  // Handler for completing the login
   const handleUserLogin = (e) => {
     e.preventDefault();
 

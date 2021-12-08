@@ -42,7 +42,7 @@ const Register = () => {
 
   const [userData, setUserData] = useState({}); // State for storing the user inputs
 
-  const history = useHistory(); // Used for redirecting
+  const history = useHistory(); // Calling this hook for redirecting
 
   // handler for getting the user inputs
   const handleUserInput = (e) => {
